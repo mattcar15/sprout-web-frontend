@@ -9,7 +9,7 @@ class Home extends Component {
     this.state = {
       isLoading: true,
       token: '',
-      cards: [{name: "Planter A", type: "Lettuce"}],
+      cards: [{name: "Planter A", type: "Lettuce", health: "high", nutrients: "high", harvest: "med"}],
     };
 
   }
@@ -33,7 +33,8 @@ class Home extends Component {
         </h1>
         <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-5">
         {this.state.cards.map((card) => (
-          <PlanterCard name={card.name} type={card.type}/>
+          <PlanterCard name={card.name} type={card.type} health={card.health} 
+            nutrients={card.nutrients} harvest={card.harvest}/>
         ))}
         </div>
       </div>

@@ -4,13 +4,25 @@ import '../../styles/planterCard.scss';
 import { faLeaf, faTint, faShoppingBasket } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+const ColorsEnum = Object.freeze({"low":'#F85151', "med":'#FFAF41', "high":'#6DE86D'});
+
 class PlanterCard extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            harvest: '#FFAF41',
+            health: ColorsEnum.low,
+            nutrients: ColorsEnum.low,
+            harvest: ColorsEnum.low,
         };
+    }
+
+    componentWillMount() {
+        this.setState({
+            health: ColorsEnum[this.props.health],
+            nutrients: ColorsEnum[this.props.nutrients],
+            harvest: ColorsEnum[this.props.harvest]
+        });
     }
 
 
