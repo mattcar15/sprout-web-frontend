@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import 'whatwg-fetch';
 import { Link } from 'react-router-dom';
-//import { Navbar, Nav, Form, FormControl, Button } from 'react-bootstrap';
-
+import PlanterCard from '../Custom/PlanterCard';
 
 class Home extends Component {
   constructor(props) {
@@ -11,79 +9,33 @@ class Home extends Component {
     this.state = {
       isLoading: true,
       token: '',
-      signUpError: '',
-      signInError: '',
-      signInEmail: '',
-      signInPassword: '',
-      signUpEmail: '',
-      signUpPassword: '',
+      cards: [{name: "Planter A", type: "Lettuce"}],
     };
 
-    this.onTextboxChangeSignInEmail = this.onTextboxChangeSignInEmail.bind(this);
-    this.onTextboxChangeSignInPassword = this.onTextboxChangeSignInPassword.bind(this);
-    this.onTextboxChangeSignUpEmail = this.onTextboxChangeSignUpEmail.bind(this);
-    this.onTextboxChangeSignUpPassword = this.onTextboxChangeSignUpPassword.bind(this);
-  }
-
-  onTextboxChangeSignInEmail(event) {
-    this.setState({
-      signInEmail: event.target.value,
-    });
-  }
-
-  onTextboxChangeSignInPassword(event) {
-    this.setState({
-      signInPassword: event.target.value,
-    });
-  }
-
-  onTextboxChangeSignUpEmail(event) {
-    this.setState({
-      signUpEmail: event.target.value,
-    });
-  }
-
-  onTextboxChangeSignUpPassword(event) {
-    this.setState({
-      signUpPassword: event.target.value,
-    });
   }
 
   render() {
     const {
-      isLoading,
       token,
-      signInError,
-      signInEmail,
-      signInPassword,
-      signUpEmail,
-      signUpPassword,
-      signUpError,
     } = this.state;
 
     let account;
     if (token) {
       account = <button onClick={this.logout}>Logout</button>;
     } else {
-      account = (
-        <div>
-          <Link to="/login">
-            <button type="button">
-              Sign in
-            </button>
-          </Link>
-          <Link to="/signup">
-            <button type="button">
-              Sign up
-            </button>
-          </Link>
-        </div>
-      );
+      account = <button onClick={this.logout}>Logout</button>;;
     }
 
     return (
       <div>
-        <p>hello</p>
+        <h1>
+          Planters
+        </h1>
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-5">
+        {this.state.cards.map((card) => (
+          <PlanterCard name={card.name} type={card.type}/>
+        ))}
+        </div>
       </div>
     );
   }

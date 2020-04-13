@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-//import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import NotFound from './NotFound';
 
@@ -14,12 +14,14 @@ import '../../styles/text.scss';
 
 function App() {
   return (
-    <Switch>
-      <Route exact path="/" component={Login}/>
-      <Route path="/login" component={Login}/>
-      <Route path="/signup" component={SignUp}/>
-      <Route component={NotFound}/>
-    </Switch>
+    <main>
+      <Switch>
+        <Route exact path="/" component={Home}/>
+        <Route path="/login" component={Login}/>
+        <Route path="/signup" component={SignUp}/>
+        <Route component={NotFound}/>
+      </Switch>
+    </main>
   )
 }
 
