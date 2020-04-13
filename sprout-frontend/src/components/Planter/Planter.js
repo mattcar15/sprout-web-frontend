@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import PlanterCard from '../Custom/PlanterCard';
 
-import '../../styles/home.scss';
+import '../../styles/planter.scss';
 
 class Home extends Component {
   constructor(props) {
@@ -11,7 +10,6 @@ class Home extends Component {
     this.state = {
       isLoading: true,
       token: '',
-      cards: [{name: "Planter A", type: "Lettuce", health: "high", nutrients: "high", harvest: "med"}],
       name: 'My Account',
     };
 
@@ -39,16 +37,15 @@ class Home extends Component {
         </nav>
         <div className="main-container">
           <h1 className="stage-title">
-            Planters
+            <div style={{opacity:0.6}}>
+                <Link className="hidden-link" to="/">
+                    Planters
+                </Link>
+            </div>
           </h1>
-          <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-5">
-          {this.state.cards.map((card) => (
-            <Link className="hidden-link" to={'planter/' + card.name}>
-              <PlanterCard name={card.name} type={card.type} health={card.health} 
-                nutrients={card.nutrients} harvest={card.harvest}/>
-            </Link>
-          ))}
-          </div>
+          <h1 className="stage-title">
+            {this.props.match.params.planterId[0].toUpperCase() + this.props.match.params.planterId.slice(1)}
+          </h1>
         </div>
       </div>
     );

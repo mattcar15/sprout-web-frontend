@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import NotFound from './NotFound';
 
 import Home from '../Home/Home';
+import Planter from '../Planter/Planter'
 
 import Login from '../Login/Login';
 import SignUp from '../SignUp/SignUp';
@@ -19,6 +20,7 @@ function App() {
         <Route exact path="/" component={Home}/>
         <Route path="/login" component={Login}/>
         <Route path="/signup" component={SignUp}/>
+        <Route path="/planter/:planterId" component={Planter}/>
         <Route component={NotFound}/>
       </Switch>
     </main>
