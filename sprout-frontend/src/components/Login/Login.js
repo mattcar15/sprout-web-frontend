@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import 'whatwg-fetch';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 class Login extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      token: '',
+      sessionId: Cookies.get('session-id'),
       signInError: '',
       signInEmail: '',
       signInPassword: '',
@@ -15,6 +16,7 @@ class Login extends Component {
 
     this.onTextboxChangeSignInEmail = this.onTextboxChangeSignInEmail.bind(this);
     this.onTextboxChangeSignInPassword = this.onTextboxChangeSignInPassword.bind(this);
+    this.onSignIn = this.onSignIn.bind(this);
   }
 
   onTextboxChangeSignInEmail(event) {
@@ -29,15 +31,71 @@ class Login extends Component {
     });
   }
 
+  onSignIn() {
+    console.log(Cookies.get('session-id'));
+    // Grab state
+    const {
+      signInEmail,
+      signInPassword,
+    } = this.state;
+
+    this.setState({
+      isLoading: true,
+    });
+
+    // Post request to backend
+    fetch('http://localhost:2000/users/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: signInEmail,
+        password: signInPassword,
+      }),
+    }).then(res => res.json())
+      .then(json => {
+        console.log('json', json);
+        if (json.success) {
+          this.setState({
+            signInError: json.message,
+            isLoading: false,
+            signInPassword: '',
+            signInEmail: '',
+          });
+          this.props.history.push('/');
+        } else {
+          this.setState({
+            signInError: json.message,
+            isLoading: false,
+          });
+        }
+      });
+
+      fetch('http://localhost:2000/farms/create', {
+        method: 'POST',
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          creator: 'fake_id',
+          name: 'first fancy farm',
+        }),
+      }).then(() => {
+        console.log('it works')
+      })
+  }
+
   render() {
     const {
-      token,
+      sessionId,
       signInError,
       signInEmail,
       signInPassword,
     } = this.state;
 
-    if (!token) {
+    if (!sessionId) {
       return (
         <div className="container">
           <div className="signin-wrapper">
@@ -76,8 +134,7 @@ class Login extends Component {
 
     return (
       <div>
-        <p>You're already signed in!</p>
-        <Link to="/">Home</Link>
+        <Redirect push to="/login"/>
       </div>
     );
   }
