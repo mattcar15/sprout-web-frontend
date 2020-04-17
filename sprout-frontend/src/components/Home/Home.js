@@ -40,7 +40,7 @@ class Home extends Component {
     } = this.state;
     if (farms) {
       return (
-        <Redirect push to={"/"+ this.state.newFarmName}/>
+        <Redirect push to={"/farm/"+ this.state.newFarmName}/>
       )
     }
     else if (!farms) {

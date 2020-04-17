@@ -32,7 +32,8 @@ class Login extends Component {
   }
 
   onSignIn() {
-    console.log(Cookies.get('session-id'));
+    console.log(Cookies.get());
+    //console.log(document.cookie);
     // Grab state
     const {
       signInEmail,
@@ -120,7 +121,7 @@ class Login extends Component {
 
     return (
       <div>
-        <Redirect push to="/login"/>
+        <Redirect push to="/"/>
       </div>
     );
   }

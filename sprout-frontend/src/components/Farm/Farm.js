@@ -102,7 +102,7 @@ class Farm extends Component {
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
                         {this.state.farms.map((farm) => (
-                            <Link className="hidden-link" to={'/' + farm}>
+                            <Link className="hidden-link" to={'/farm/' + farm}>
                                     <button className="btn">{farm}</button>
                             </Link>
                         ))}
