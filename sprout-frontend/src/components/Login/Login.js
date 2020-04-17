@@ -44,7 +44,7 @@ class Login extends Component {
     });
 
     // Post request to backend
-    fetch('http://localhost:2000/users/login', {
+    fetch('/users/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -71,21 +71,6 @@ class Login extends Component {
           });
         }
       });
-
-      fetch('http://localhost:2000/farms/create', {
-        method: 'POST',
-        credentials: 'include',
-        withCredentials: true,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          creator: 'fake_id',
-          name: 'first fancy farm',
-        }),
-      }).then(() => {
-        console.log('it works')
-      })
   }
 
   render() {
