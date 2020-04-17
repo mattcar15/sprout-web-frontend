@@ -74,6 +74,7 @@ class Login extends Component {
 
       fetch('http://localhost:2000/farms/create', {
         method: 'POST',
+        credentials: 'include',
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json'
