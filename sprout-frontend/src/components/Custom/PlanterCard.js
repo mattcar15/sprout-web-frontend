@@ -17,7 +17,7 @@ class PlanterCard extends Component {
         };
     }
 
-    componentWillMount() {
+    componentDidMount() {
         this.setState({
             health: ColorsEnum[this.props.health],
             nutrients: ColorsEnum[this.props.nutrients],
