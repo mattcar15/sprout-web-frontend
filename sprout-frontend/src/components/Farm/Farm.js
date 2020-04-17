@@ -19,6 +19,7 @@ class Farm extends Component {
       curFarm: 'My Farm',
       farms: [],
       newFarmName: '',
+      newUser: '',
     };
 
     this.addPlanterSubmit = this.addPlanterSubmit.bind(this);
@@ -26,6 +27,8 @@ class Farm extends Component {
     this.planterTypeChange = this.planterTypeChange.bind(this);
     this.farmNameChange = this.farmNameChange.bind(this);
     this.addFarmSubmit = this.addFarmSubmit.bind(this);
+    this.addUserSubmit = this.addUserSubmit.bind(this);
+    this.userChange = this.userChange.bind(this);
   }
 
   componentDidMount() {
@@ -66,6 +69,16 @@ class Farm extends Component {
     console.log(this.state.farms);
   }
 
+  userChange(event) {
+      this.setState({newUser: event.target.value});
+  }
+
+  addUserSubmit() {
+      //do request here to add user to farm
+      console.log(this.state.newUser + " has been added to " + this.state.curFarm);
+      this.setState({newUser: ''});
+  }
+
   render() {
     const {
       sessionId,
@@ -95,7 +108,8 @@ class Farm extends Component {
                         ))}
                     </div>
                 </div>
-                <button className="btn btn-primary" data-toggle="modal" data-target="#addFarmModal">Add new farm</button>
+                <button className="btn btn-primary" data-toggle="modal" data-target="#addFarmModal">Add farm</button>
+                <button className="btn btn-primary" data-toggle="modal" data-target='#addUserModal'>Add user</button>
             </div>
             <div class="dropdown open">
               <button role="button" type="button" class="btn" data-toggle="dropdown"> 
@@ -170,6 +184,31 @@ class Farm extends Component {
                 <div className="modal-footer">
                   <button className="btn btn-secondary" data-dismiss="modal">Close</button>
                   <button onClick={this.addFarmSubmit} data-dismiss="modal" className="btn btn-primary">Add</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="modal fade" id="addUserModal" tabIndex="-1" role="dialog" aria-labelledby="addUserModal" aria-hidden="true">
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title" id="addUserModal">Add New Farm</h5>
+                  <button className="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <form onSubmit={this.addUserSubmit}>
+                    <div className="form-group">
+                      <label for="farm-name" className="col-form-label">Farm Name:</label>
+                      <input type="text" value={this.state.newUser} onChange={this.userChange} className="form-control" id="farm-name"/>
+                    </div>
+                  </form>
+                </div>
+                <div className="modal-footer">
+                  <button className="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button onClick={this.addUserSubmit} data-dismiss="modal" className="btn btn-primary">Add</button>
                 </div>
               </div>
             </div>
