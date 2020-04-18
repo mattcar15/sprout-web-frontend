@@ -21,6 +21,7 @@ class App extends Component {
     super(props);
     this.state = {
       user: null,
+      doneAuth: false,
     };
     this.updateUser = this.updateUser.bind(this);
   }
@@ -41,6 +42,7 @@ class App extends Component {
     ).then((data) => {
       this.setState({
         user: data,
+        doneAuth: true,
       });
       console.log(this.state.user);
     });
@@ -50,7 +52,7 @@ class App extends Component {
     return (
       <main>
         <Switch>
-          <PrivateRoute exact path="/" component={Home} user={this.state.user}/>
+          <PrivateRoute exact path="/" component={Home} user={this.state.user} />
           <PrivateRoute path="/farm/:farmId" component={Farm} user={this.state.user}/>
           <PublicRoute path="/login" component={Login} user={this.state.user}/>
           <PublicRoute path="/signup" component={SignUp} user={this.state.user}/>
