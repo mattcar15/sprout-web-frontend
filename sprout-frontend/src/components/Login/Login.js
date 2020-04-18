@@ -8,10 +8,10 @@ class Login extends Component {
     super(props);
 
     this.state = {
-      sessionId: Cookies.get('session-id'),
       signInError: '',
       signInEmail: '',
       signInPassword: '',
+      loggedIn: false
     };
 
     this.onTextboxChangeSignInEmail = this.onTextboxChangeSignInEmail.bind(this);
@@ -58,13 +58,7 @@ class Login extends Component {
       .then(json => {
         console.log('json', json);
         if (json.success) {
-          this.setState({
-            signInError: json.message,
-            isLoading: false,
-            signInPassword: '',
-            signInEmail: '',
-          });
-          this.props.history.push('/');
+          this.setState({loggedIn: true});
         } else {
           this.setState({
             signInError: json.message,
@@ -76,13 +70,11 @@ class Login extends Component {
 
   render() {
     const {
-      sessionId,
       signInError,
       signInEmail,
       signInPassword,
     } = this.state;
 
-    if (!sessionId) {
       return (
         <div className="container">
           <div className="signin-wrapper">
@@ -115,15 +107,10 @@ class Login extends Component {
             </button>
             <p>No account? <Link to="/signup">Sign Up</Link></p>
           </div>
+          { this.state.loggedIn ? <Redirect to="/" /> : null }
         </div>
       );
-    }
 
-    return (
-      <div>
-        <Redirect push to="/"/>
-      </div>
-    );
   }
 }
 

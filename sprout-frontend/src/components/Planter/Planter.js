@@ -27,11 +27,11 @@ class Home extends Component {
             <img src={require("../../assets/sproutIcon.png")} height="50" alt=""/>
           </a>
           <div class="dropdown open">
-            <button role="button" type="button" class="btn" data-toggle="dropdown"> 
+            <button class="btn" data-toggle="dropdown"> 
               {this.state.name}
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-              <button class="dropdown-item" type="button" onClick={this.logout}>Logout</button>
+              <button class="dropdown-item" onClick={this.logout}>Logout</button>
             </div>
           </div>
         </nav>

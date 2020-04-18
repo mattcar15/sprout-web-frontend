@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Switch, withRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Cookies from 'js-cookie';
+import PrivateRoute from './PrivateRoute';
+import PublicRoute from './PublicRoute';
 
 import NotFound from './NotFound';
 
@@ -15,39 +16,50 @@ import SignUp from '../SignUp/SignUp';
 import '../../styles/styles.scss';
 import '../../styles/text.scss';
 
-class ProtectedRoute extends Component {
-  render() {
-    const { component: Component, ...props } = this.props
-
-    return (
-      <Route 
-        {...props} 
-        render={props => (
-          Cookies.get('session-id') ?
-            <Component {...props} /> :
-            <Redirect to='/login' />
-        )} 
-      />
-    )
-  }
-}
-
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+    };
+    this.updateUser = this.updateUser.bind(this);
+  }
+
+  componentDidMount() {
+    this.updateUser();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.updateUser();
+    }
+  }
+
+  updateUser() {
+    fetch('/users/auth').then(
+      results => results.json(),
+    ).then((data) => {
+      this.setState({
+        user: data,
+      });
+      console.log(this.state.user);
+    });
+  }
 
   render() {
     return (
       <main>
         <Switch>
-          <ProtectedRoute exact path="/" component={Home}/>
-          <ProtectedRoute path="/farm/:farmId" component={Farm}/>
-          <Route path="/login" component={Login}/>
-          <Route path="/signup" component={SignUp}/>
-          <ProtectedRoute path="/planter/:planterId" component={Planter}/>
-          <Route component={NotFound}/>
+          <PrivateRoute exact path="/" component={Home} user={this.state.user}/>
+          <PrivateRoute path="/farm/:farmId" component={Farm} user={this.state.user}/>
+          <PublicRoute path="/login" component={Login} user={this.state.user}/>
+          <PublicRoute path="/signup" component={SignUp} user={this.state.user}/>
+          <PrivateRoute path="/planter/:planterId" component={Planter} user={this.state.user}/>
+          <PublicRoute component={NotFound}/>
         </Switch>
       </main>
     )
   }
 }
 
-export default App;
+export default withRouter(props => <App {...props} />);

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import 'whatwg-fetch';
-import { Link } from 'react-router-dom';
 
 class SignUp extends Component {
     constructor(props) {

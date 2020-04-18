@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import PlanterCard from '../Custom/PlanterCard';
+import { Redirect } from 'react-router-dom';
 
 import '../../styles/home.scss';
 
@@ -9,19 +8,28 @@ class Home extends Component {
     super(props);
 
     this.state = {
-      farms: '',
       name: 'My Account',
       newFarmName: '',
       farms: null,
+      loggedOut: false,
     };
     
     this.farmNameChange = this.farmNameChange.bind(this);
     this.addFarmSubmit = this.addFarmSubmit.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   logout() {
-    //add logout fetch here
-    alert("You logged out");
+    fetch('/users/logout', {
+      method: 'POST'
+    })
+    .then(res => res.json()).then((data) => {
+      if (data.success) {
+        this.setState({
+          loggedOut: true,
+        });
+      }
+    });
   }
 
   farmNameChange(event) {
@@ -51,7 +59,7 @@ class Home extends Component {
               <img src={require("../../assets/sproutIcon.png")} height="50" alt=""/>
             </a>
             <div className="dropdown open">
-              <button role="button" className="btn" data-toggle="dropdown"> 
+              <button className="btn" data-toggle="dropdown"> 
                 {this.state.name}
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
@@ -78,7 +86,7 @@ class Home extends Component {
                 <div className="modal-body">
                   <form onSubmit={this.addFarmSubmit}>
                     <div className="form-group">
-                      <label for="farm-name" className="col-form-label">Farm Name:</label>
+                      <label htmlFor="farm-name" className="col-form-label">Farm Name:</label>
                       <input type="text" value={this.state.newFarmName} onChange={this.farmNameChange} className="form-control" id="farm-name"/>
                     </div>
                   </form>
@@ -90,6 +98,7 @@ class Home extends Component {
               </div>
             </div>
           </div>
+          { this.state.loggedOut ? <Redirect to="/login" /> : null }
         </div>
       );
     }
