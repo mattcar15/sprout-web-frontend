@@ -5,10 +5,11 @@ import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 
 import NotFound from './NotFound';
+import Loading from '../Loading/Loading';
 
 import Home from '../Home/Home';
-import Planter from '../Planter/Planter'
-import Farm from '../Farm/Farm'
+import Planter from '../Planter/Planter';
+import Farm from '../Farm/Farm';
 
 import Login from '../Login/Login';
 import SignUp from '../SignUp/SignUp';
@@ -51,11 +52,7 @@ class App extends Component {
   render() {
     if (this.state.loading) {
       return (
-      <div className="container">
-        <div className="signin-wrapper">
-          <p>Loading...</p>
-        </div>
-      </div>
+        <Loading/>
       )
     } else {
       return (

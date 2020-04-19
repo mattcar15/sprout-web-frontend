@@ -6,7 +6,7 @@ const PrivateRoute = ({
 }) => (
   <Route
     {...rest}
-    render={props => (((user && user._id) || !doneAuth) ? (
+    render={props => ((user && user._id) ? (
       <Component user={user} {...props} />
     ) : (
       <Redirect to="/login" />

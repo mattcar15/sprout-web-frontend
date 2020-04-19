@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import PlanterCard from '../Custom/PlanterCard';
 
 import '../../styles/farm.scss';
@@ -19,6 +19,7 @@ class Farm extends Component {
       farms: [],
       newFarmName: '',
       newUser: '',
+      loggedOut: false,
     };
 
     this.addPlanterSubmit = this.addPlanterSubmit.bind(this);
@@ -28,6 +29,7 @@ class Farm extends Component {
     this.addFarmSubmit = this.addFarmSubmit.bind(this);
     this.addUserSubmit = this.addUserSubmit.bind(this);
     this.userChange = this.userChange.bind(this);
+    this.logout = this.logout.bind(this);
   }
 
   componentDidMount() {
@@ -58,8 +60,16 @@ class Farm extends Component {
   }
 
   logout() {
-    //add logout fetch here
-    alert("You logged out");
+    fetch('/users/logout', {
+      method: 'POST'
+    })
+    .then(res => res.json()).then((data) => {
+      if (data.success) {
+        this.setState({
+          loggedOut: true,
+        });
+      }
+    });
   }
 
   addPlanterSubmit() {
@@ -100,12 +110,20 @@ class Farm extends Component {
   }
 
   render() {
+    const {
+      loggedOut
+    } = this.state;
     /*if (!sessionId) {
       return (
         <Redirect push to="/login"/>
       )
     }*/
-    if (true) {
+    if (loggedOut) {
+      return (
+        <Redirect to="/login" />
+      )
+    }
+    else {
       return (
         <div>
           <nav className="navbar navbar-inversetransparent">
@@ -113,8 +131,8 @@ class Farm extends Component {
               <img src={require("../../assets/sproutIcon.png")} height="50" alt=""/>
             </a>
             <div id="farmsWrapper">
-              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <div class="btn-group" role="group">
+              <div className="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <div className="btn-group" role="group">
                     <button className="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown"> 
                         {this.state.curFarm}
                     </button>

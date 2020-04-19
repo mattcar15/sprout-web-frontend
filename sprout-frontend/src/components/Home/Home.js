@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import Loading from '../Loading/Loading';
 
 import '../../styles/home.scss';
 
@@ -10,13 +11,39 @@ class Home extends Component {
     this.state = {
       name: 'My Account',
       newFarmName: '',
-      newFarm: null,
       loggedOut: false,
+      lastFarm: null,
+      loading: false,
     };
     
     this.farmNameChange = this.farmNameChange.bind(this);
     this.addFarmSubmit = this.addFarmSubmit.bind(this);
     this.logout = this.logout.bind(this);
+  }
+
+  componentDidMount() {
+    this._isMounted = true;
+    if( this.props.user && this.props.user._id) {
+      this.setState({loading: true});
+      fetch(('/users/myFarms'), {
+        type: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(res => res.json())
+      .then(json => {
+        console.log('json', json.farms);
+        if (json.farms) {
+          this.setState({lastFarm: json.farms[0]});
+        }
+        this.setState({loading: false});
+        console.log(this.state);
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   logout() {
@@ -50,23 +77,35 @@ class Home extends Component {
     }).then(res => res.json())
     .then(json => {
       console.log('json', json.farm);
-      this.setState({newFarm: json.farm});
+      this.setState({
+        lastFarm: json.farm, 
+      });
     });
   }
 
   render() {
     const {
-      newFarm,
+      lastFarm,
+      loading,
+      loggedOut,
     } = this.state;
-    if (newFarm) {
+    if (loggedOut) {
       return (
-        <Redirect push to={{
-          pathname: "/farm/"+ this.state.newFarm.name,
-          farmid: newFarm._id
-          }}/>
+        <Redirect to="/login" />
       )
     }
-    else if (!newFarm) {
+    if (loading) {
+      return (
+        <Loading/>
+      )
+    } else if (lastFarm) {
+      return (
+        <Redirect push to={{
+          pathname: "/farm/"+ this.state.lastFarm[1],
+          farmid: lastFarm[0]
+          }}/>
+      )
+    } else if (!lastFarm) {
       return (
         <div>
           <nav className="navbar navbar-inversetransparent">
