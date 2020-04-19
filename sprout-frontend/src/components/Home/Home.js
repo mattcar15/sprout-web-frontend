@@ -10,7 +10,7 @@ class Home extends Component {
     this.state = {
       name: 'My Account',
       newFarmName: '',
-      farms: null,
+      newFarm: null,
       loggedOut: false,
     };
     
@@ -39,7 +39,6 @@ class Home extends Component {
   addFarmSubmit() {
     //push new farm to farms with this user
     console.log('A farm was added: ' + this.state.newFarmName);
-    this.setState({farms: this.state.newFarmName});
     fetch('/farms/create', {
       method: 'POST',
       headers: {
@@ -50,20 +49,24 @@ class Home extends Component {
       }),
     }).then(res => res.json())
     .then(json => {
-      console.log('json', json);
+      console.log('json', json.farm);
+      this.setState({newFarm: json.farm});
     });
   }
 
   render() {
     const {
-      farms,
+      newFarm,
     } = this.state;
-    if (farms) {
+    if (newFarm) {
       return (
-        <Redirect push to={"/farm/"+ this.state.newFarmName}/>
+        <Redirect push to={{
+          pathname: "/farm/"+ this.state.newFarm.name,
+          farmid: newFarm._id
+          }}/>
       )
     }
-    else if (!farms) {
+    else if (!newFarm) {
       return (
         <div>
           <nav className="navbar navbar-inversetransparent">

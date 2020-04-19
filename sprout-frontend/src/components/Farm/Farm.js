@@ -31,23 +31,30 @@ class Farm extends Component {
   }
 
   componentDidMount() {
-
-    console.log(this.props.user);
-      if(this.props.match.params.farmId) {
-        this.setState({curFarm: this.props.match.params.farmId});
-      }
-      fetch('/users/myFarms', {
-        type: 'POST',
+    this._isMounted = true;
+    if(this.props.match.params.farmName) {
+      console.log(this.props.match.params.farmName);
+      this.setState({curFarm: this.props.match.params.farmName});
+    }
+    if(this.props.location.farmid) {
+      console.log(this.props.location.farmid);
+    }
+    if( this.props.user && this.props.user._id) {
+      fetch(('/users/myFarms'), {
+        type: 'GET',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          name: this.props.user._id,
-        }),
       }).then(res => res.json())
       .then(json => {
-        console.log('json', json);
+        console.log('json', json.farms);
+        this.setState({farms: json.farms});
       });
+    }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   logout() {
@@ -110,10 +117,14 @@ class Farm extends Component {
                     <button className="btn dropdown-toggle" type="button" data-toggle="dropdown"> 
                         {this.state.curFarm}
                     </button>
-                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2" style={{overflowY:'scroll', height:'300px'}}>
                         {this.state.farms.map((farm) => (
-                            <Link className="hidden-link" to={'/farm/' + farm}>
-                                    <button className="btn">{farm}</button>
+                            <Link className="hidden-link" 
+                              to={{
+                                pathname: '/farm/'+ farm[1], 
+                                farmid: farm[0],
+                              }}>
+                                    <button className="btn" style={{width:'100%', textAlign:'left'}}>{farm[1]}</button>
                             </Link>
                         ))}
                     </div>
@@ -203,7 +214,7 @@ class Farm extends Component {
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title" id="addUserModal">Add New Farm</h5>
+                  <h5 className="modal-title" id="addUserModal">Add New User</h5>
                   <button className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -211,7 +222,7 @@ class Farm extends Component {
                 <div className="modal-body">
                   <form onSubmit={this.addUserSubmit}>
                     <div className="form-group">
-                      <label htmlFor="farm-name" className="col-form-label">Farm Name:</label>
+                      <label htmlFor="farm-name" className="col-form-label">Username:</label>
                       <input type="text" value={this.state.newUser} onChange={this.userChange} className="form-control" id="farm-name"/>
                     </div>
                   </form>

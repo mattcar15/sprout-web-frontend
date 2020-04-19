@@ -62,7 +62,7 @@ class App extends Component {
         <main>
           <Switch>
             <PrivateRoute exact path="/" component={Home} user={this.state.user} />
-            <PrivateRoute path="/farm/:farmId" component={Farm} user={this.state.user}/>
+            <PrivateRoute path="/farm/:farmName" component={Farm} user={this.state.user}/>
             <PublicRoute path="/login" component={Login} user={this.state.user}/>
             <PublicRoute path="/signup" component={SignUp} user={this.state.user}/>
             <PrivateRoute path="/planter/:planterId" component={Planter} user={this.state.user}/>
