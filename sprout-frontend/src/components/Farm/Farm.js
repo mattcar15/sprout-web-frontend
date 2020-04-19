@@ -113,8 +113,9 @@ class Farm extends Component {
               <img src={require("../../assets/sproutIcon.png")} height="50" alt=""/>
             </a>
             <div id="farmsWrapper">
-                <div className="dropdown">
-                    <button className="btn dropdown-toggle" type="button" data-toggle="dropdown"> 
+              <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <div class="btn-group" role="group">
+                    <button className="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown"> 
                         {this.state.curFarm}
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenu2" style={{overflowY:'scroll', height:'300px'}}>
@@ -131,6 +132,7 @@ class Farm extends Component {
                 </div>
                 <button className="btn btn-primary" data-toggle="modal" data-target="#addFarmModal">Add farm</button>
                 <button className="btn btn-primary" data-toggle="modal" data-target='#addUserModal'>Add user</button>
+              </div>
             </div>
             <div className="dropdown open">
               <button type="button" className="btn" data-toggle="dropdown"> 

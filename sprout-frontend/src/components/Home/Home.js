@@ -85,7 +85,7 @@ class Home extends Component {
           <div className="main-container" style={{textAlign:'center'}}>
               <div style={{marginTop:'200px'}}>
                 <h2>To begin you'll need a farm!</h2>
-                <button className="btn btn-primary" data-toggle="modal" data-target="#addFarmModal">Add new farm</button>
+                <button style={{margin:20}}className="btn btn-primary" data-toggle="modal" data-target="#addFarmModal">Add new farm</button>
               </div>
           </div>
 
