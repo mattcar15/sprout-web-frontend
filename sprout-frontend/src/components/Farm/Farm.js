@@ -31,9 +31,23 @@ class Farm extends Component {
   }
 
   componentDidMount() {
+
+    console.log(this.props.user);
       if(this.props.match.params.farmId) {
         this.setState({curFarm: this.props.match.params.farmId});
       }
+      fetch('/users/myFarms', {
+        type: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: this.props.user._id,
+        }),
+      }).then(res => res.json())
+      .then(json => {
+        console.log('json', json);
+      });
   }
 
   logout() {

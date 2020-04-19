@@ -40,6 +40,18 @@ class Home extends Component {
     //push new farm to farms with this user
     console.log('A farm was added: ' + this.state.newFarmName);
     this.setState({farms: this.state.newFarmName});
+    fetch('/farms/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: this.state.newFarmName,
+      }),
+    }).then(res => res.json())
+    .then(json => {
+      console.log('json', json);
+    });
   }
 
   render() {

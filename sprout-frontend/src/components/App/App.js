@@ -21,7 +21,7 @@ class App extends Component {
     super(props);
     this.state = {
       user: null,
-      doneAuth: false,
+      loading: false,
     };
     this.updateUser = this.updateUser.bind(this);
   }
@@ -37,30 +37,40 @@ class App extends Component {
   }
 
   updateUser() {
+    this.setState({loading: true});
     fetch('/users/auth').then(
       results => results.json(),
     ).then((data) => {
       this.setState({
         user: data,
-        doneAuth: true,
+        loading: false,
       });
-      console.log(this.state.user);
     });
   }
 
   render() {
-    return (
-      <main>
-        <Switch>
-          <PrivateRoute exact path="/" component={Home} user={this.state.user} />
-          <PrivateRoute path="/farm/:farmId" component={Farm} user={this.state.user}/>
-          <PublicRoute path="/login" component={Login} user={this.state.user}/>
-          <PublicRoute path="/signup" component={SignUp} user={this.state.user}/>
-          <PrivateRoute path="/planter/:planterId" component={Planter} user={this.state.user}/>
-          <PublicRoute component={NotFound}/>
-        </Switch>
-      </main>
-    )
+    if (this.state.loading) {
+      return (
+      <div className="container">
+        <div className="signin-wrapper">
+          <p>Loading...</p>
+        </div>
+      </div>
+      )
+    } else {
+      return (
+        <main>
+          <Switch>
+            <PrivateRoute exact path="/" component={Home} user={this.state.user} />
+            <PrivateRoute path="/farm/:farmId" component={Farm} user={this.state.user}/>
+            <PublicRoute path="/login" component={Login} user={this.state.user}/>
+            <PublicRoute path="/signup" component={SignUp} user={this.state.user}/>
+            <PrivateRoute path="/planter/:planterId" component={Planter} user={this.state.user}/>
+            <PublicRoute component={NotFound}/>
+          </Switch>
+        </main>
+      )
+    }
   }
 }
 
