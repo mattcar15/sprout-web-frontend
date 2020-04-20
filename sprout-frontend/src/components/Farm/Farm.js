@@ -164,9 +164,9 @@ class Farm extends Component {
                         ))}
                     </div>
                 </div>
-                <button className="btn btn-primary" data-toggle="modal" data-target="#addFarmModal">Add farm</button>
-                <button className="btn btn-primary" data-toggle="modal" data-target='#addUserModal'>Add user</button>
-              </div>
+                <button className="btn btn-primary" data-toggle="modal" data-target='#addUserModal'>Permissions</button>
+                </div>
+                <button style={{marginLeft:10}} className="btn btn-primary" data-toggle="modal" data-target="#addFarmModal">Add farm</button>
             </div>
             <div className="dropdown open">
               <button type="button" className="btn" data-toggle="dropdown"> 
@@ -213,7 +213,7 @@ class Farm extends Component {
             </div>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-5">
             {this.state.cards.map((card) => (
-              <Link className="hidden-link" to={'planter/' + card.name}>
+              <Link className="hidden-link" to={'/planter/' + card.name}>
                 <PlanterCard name={card.name} type={card.type} health={card.health} 
                   nutrients={card.nutrients} harvest={card.harvest}/>
               </Link>
@@ -246,11 +246,14 @@ class Farm extends Component {
             </div>
           </div>
 
+
+
+
           <div className="modal fade" id="addUserModal" tabIndex="-1" role="dialog" aria-labelledby="addUserModal" aria-hidden="true">
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title" id="addUserModal">Add New User</h5>
+                  <h5 className="modal-title" id="addUserModal">Permissions</h5>
                   <button className="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
@@ -258,14 +261,18 @@ class Farm extends Component {
                 <div className="modal-body">
                   <form onSubmit={this.addUserSubmit}>
                     <div className="form-group">
-                      <label htmlFor="farm-name" className="col-form-label">Username:</label>
-                      <input type="text" value={this.state.newUser} onChange={this.userChange} className="form-control" id="farm-name"/>
+                      <label htmlFor="farm-name" className="col-form-label">Invite user:</label>
+                      <div className="input-group">
+                        <input type="text" value={this.state.newUser} onChange={this.userChange} placeholder="Username to invite" className="form-control" id="farm-name"/>
+                        <div className="input-group-append">
+                          <button onClick={this.addUserSubmit} data-dismiss="modal" className="btn btn-primary">Add</button>
+                        </div>
+                      </div>
                     </div>
                   </form>
                 </div>
                 <div className="modal-footer">
                   <button className="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button onClick={this.addUserSubmit} data-dismiss="modal" className="btn btn-primary">Add</button>
                 </div>
               </div>
             </div>

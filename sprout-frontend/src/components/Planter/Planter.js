@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import '../../styles/planter.scss';
 
-class Home extends Component {
+class Planter extends Component {
   constructor(props) {
     super(props);
 
@@ -52,4 +52,4 @@ class Home extends Component {
   }
 }
 
-export default Home;
+export default Planter;
