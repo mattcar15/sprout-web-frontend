@@ -32,12 +32,10 @@ class Home extends Component {
         },
       }).then(res => res.json())
       .then(json => {
-        console.log('json', json.farms);
         if (json.farms) {
           this.setState({lastFarm: json.farms[0]});
         }
         this.setState({loading: false});
-        console.log(this.state);
       });
     }
   }

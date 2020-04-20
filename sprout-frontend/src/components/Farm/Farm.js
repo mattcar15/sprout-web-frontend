@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import PlanterCard from '../Custom/PlanterCard';
+import Loading from '../Loading/Loading';
 
 import '../../styles/farm.scss';
 
@@ -18,8 +19,11 @@ class Farm extends Component {
       curFarm: 'My Farm',
       farms: [],
       newFarmName: '',
+      newFarm: null,
       newUser: '',
       loggedOut: false,
+      loading: false,
+      members: [],
     };
 
     this.addPlanterSubmit = this.addPlanterSubmit.bind(this);
@@ -30,17 +34,17 @@ class Farm extends Component {
     this.addUserSubmit = this.addUserSubmit.bind(this);
     this.userChange = this.userChange.bind(this);
     this.logout = this.logout.bind(this);
+    this.getMembers = this.getMembers.bind(this);
+    this.deleteUser = this.deleteUser.bind(this);
   }
 
   componentDidMount() {
     this._isMounted = true;
     if(this.props.match.params.farmName) {
-      console.log(this.props.match.params.farmName);
       this.setState({curFarm: this.props.match.params.farmName});
     }
-    if(this.props.location.farmid) {
-      console.log(this.props.location.farmid);
-    }
+    this.getMembers();
+
     if( this.props.user && this.props.user._id) {
       fetch(('/users/myFarms'), {
         type: 'GET',
@@ -49,13 +53,26 @@ class Farm extends Component {
         },
       }).then(res => res.json())
       .then(json => {
-        console.log('json', json.farms);
         this.setState({farms: json.farms});
       });
     }
   }
   componentWillUnmount() {
     this._isMounted = false;
+  }
+
+  getMembers() {
+    if(this.props.location.farmid) {
+      fetch(('/farms/' + this.props.location.farmid + '/members'), {
+        type: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(res => res.json())
+      .then(json => {
+        this.setState({members: json.members});
+      });
+    }
   }
 
   logout() {
@@ -84,6 +101,10 @@ class Farm extends Component {
     this.setState({newType: event.target.value});
   }
 
+  userChange(event) {
+      this.setState({newUser: event.target.value});
+  }
+
   farmNameChange(event) {
     this.setState({newFarmName: event.target.value});
   }
@@ -91,15 +112,21 @@ class Farm extends Component {
   addFarmSubmit() {
     //push new farm to farms with this user
     console.log('A farm was added: ' + this.state.newFarmName);
-    this.setState({
-        farms: this.state.farms.concat([this.state.newFarmName]),
-        newFarmName: ''
+    fetch('/farms/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: this.state.newFarmName,
+      }),
+    }).then(res => res.json())
+    .then(json => {
+      console.log('json', json.farm);
+      this.setState({
+        newFarm: json.farm, 
+      });
     });
-    console.log(this.state.farms);
-  }
-
-  userChange(event) {
-      this.setState({newUser: event.target.value});
   }
 
   addUserSubmit() {
@@ -117,29 +144,54 @@ class Farm extends Component {
           })
         }).then(res => res.json())
         .then(json => {
-          console.log('json', json);
           console.log(this.state.newUser + " has been added to " + this.state.curFarm);
+          this.getMembers();
         });
       } else {
-        console.log("Farm ID error");
+        console.log("Farm ID error in add user");
       }
+  }
+
+  deleteUser(id) {
+    console.log(id);
+    if (this.props.location.farmid) {
+      fetch(('/farms/' + this.props.location.farmid + '/member/' + id), {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then(res => res.json())
+      .then(json => {
+        console.log("deleted member");
+        this.getMembers();
+      });
+    } else {
+      console.log("Farm ID error in delete member");
+    }
   }
 
   render() {
     const {
-      loggedOut
+      loggedOut,
+      loading,
+      newFarm
     } = this.state;
-    /*if (!sessionId) {
-      return (
-        <Redirect push to="/login"/>
-      )
-    }*/
     if (loggedOut) {
       return (
         <Redirect to="/login" />
       )
-    }
-    else {
+    } else if (loading) {
+      return(
+        <Loading/>
+      );
+    } else if (newFarm) {
+      return(
+        <Redirect push to={{
+          pathname: "/farm/"+ this.state.newFarm.name,
+          farmid: newFarm._id
+          }}/>
+      );
+    } else {
       return (
         <div>
           <nav className="navbar navbar-inversetransparent">
@@ -259,6 +311,15 @@ class Farm extends Component {
                   </button>
                 </div>
                 <div className="modal-body">
+                  <ul className="list-group" style={{marginBottom:10}}>
+                    {this.state.members.map((member) => (
+                      <li className="list-group-item">{member.username}
+                      <button className="close" onClick={() => this.deleteUser(member._id)}>
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                      </li>
+                    ))}
+                  </ul>
                   <form onSubmit={this.addUserSubmit}>
                     <div className="form-group">
                       <label htmlFor="farm-name" className="col-form-label">Invite user:</label>
