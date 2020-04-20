@@ -54,7 +54,6 @@ class Farm extends Component {
       });
     }
   }
-
   componentWillUnmount() {
     this._isMounted = false;
   }
@@ -105,8 +104,25 @@ class Farm extends Component {
 
   addUserSubmit() {
       //do request here to add user to farm
-      console.log(this.state.newUser + " has been added to " + this.state.curFarm);
       this.setState({newUser: ''});
+      if (this.props.location.farmid) {
+        console.log(this.props.location.farmid);
+        fetch(('/farms/' + this.props.location.farmid + '/addMember'), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            username: this.state.newUser,
+          })
+        }).then(res => res.json())
+        .then(json => {
+          console.log('json', json);
+          console.log(this.state.newUser + " has been added to " + this.state.curFarm);
+        });
+      } else {
+        console.log("Farm ID error");
+      }
   }
 
   render() {
@@ -136,7 +152,7 @@ class Farm extends Component {
                     <button className="btn dropdown-toggle btn-primary" type="button" data-toggle="dropdown"> 
                         {this.state.curFarm}
                     </button>
-                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2" style={{overflowY:'scroll', height:'300px'}}>
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenu2" style={{overflowY:'scroll', maxHeight:'300px'}}>
                         {this.state.farms.map((farm) => (
                             <Link className="hidden-link" 
                               to={{
