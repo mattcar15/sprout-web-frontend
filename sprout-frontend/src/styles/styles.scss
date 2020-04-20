@@ -109,3 +109,22 @@ Form {
     display: inline-block;
     margin-right: 10px;
 }
+
+.btn-primary {
+    background-color: #00d254;
+    border-color: #01b94b;
+}
+.btn-primary:hover {
+    background-color: #01b94b;
+    border-color: #01b94b;
+}
+
+.btn-primary:active, .show > .btn-primary.dropdown-toggle {
+    background-color: #01b94b !important;
+    border-color: #01b94b !important;
+}
+
+.btn-primary:focus {
+    background-color: #01b94b;
+    border-color: #01b94b;
+}
