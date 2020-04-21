@@ -44,7 +44,11 @@ class Planter extends Component {
         <div className="main-container">
           <h1 className="stage-title">
             <div style={{opacity:0.6}}>
-                <Link className="hidden-link" to="/">
+                <Link className="hidden-link" 
+                to={{
+                  pathname: "/farm/" + this.props.location.farmname,
+                  farmid: this.props.location.farmid,
+                }}>
                     Planters
                 </Link>
             </div>
