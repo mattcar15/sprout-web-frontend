@@ -11,11 +11,10 @@ class Farm extends Component {
 
     this.state = {
       isLoading: true,
-      cards: [{name: "Planter A", type: "Lettuce", health: "low", nutrients: "low", harvest: "med"},
-              {name: "Planter B", type: "Lettuce", health: "high", nutrients: "high", harvest: "med"}],
       name: 'My Account',
-      newId: '',
-      newType: '',
+      newPlanterName: '',
+      newPlanterType: '',
+      newPlanterCrop: '',
       curFarm: 'My Farm',
       farms: [],
       newFarmName: '',
@@ -24,11 +23,14 @@ class Farm extends Component {
       loggedOut: false,
       loading: false,
       members: [],
+      planters: [],
+      planterTypes: [],
     };
 
     this.addPlanterSubmit = this.addPlanterSubmit.bind(this);
-    this.planterIdChange = this.planterIdChange.bind(this);
+    this.planterNameChange = this.planterNameChange.bind(this);
     this.planterTypeChange = this.planterTypeChange.bind(this);
+    this.planterCropChange = this.planterCropChange.bind(this);
     this.farmNameChange = this.farmNameChange.bind(this);
     this.addFarmSubmit = this.addFarmSubmit.bind(this);
     this.addUserSubmit = this.addUserSubmit.bind(this);
@@ -36,6 +38,8 @@ class Farm extends Component {
     this.logout = this.logout.bind(this);
     this.getMembers = this.getMembers.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
+    this.getPlanters = this.getPlanters.bind(this);
+    this.getPlanterTypes = this.getPlanterTypes.bind(this);
   }
 
   componentDidMount() {
@@ -44,8 +48,9 @@ class Farm extends Component {
       this.setState({curFarm: this.props.match.params.farmName});
     }
     this.getMembers();
-
-    if( this.props.user && this.props.user._id) {
+    this.getPlanters();
+    this.getPlanterTypes();
+    if( this.props.user && this.props.user._id) { 
       this.setState({name: this.props.user.username})
       fetch(('/users/myFarms'), {
         type: 'GET',
@@ -65,13 +70,30 @@ class Farm extends Component {
   getMembers() {
     if(this.props.location.farmid) {
       fetch(('/farms/' + this.props.location.farmid + '/members'), {
-        type: 'GET',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         },
       }).then(res => res.json())
       .then(json => {
         this.setState({members: json.members});
+      });
+    }
+  }
+
+  getPlanterTypes() {
+    if(this.props.location.farmid) {
+      this.setState({loading: true})
+      fetch(('/planters/planterTypes'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      }).then(res => res.json())
+      .then(json => {
+        this.setState({planterTypes: json.types});
+        console.log(json)
+        this.setState({loading: false})
       });
     }
   }
@@ -89,17 +111,16 @@ class Farm extends Component {
     });
   }
 
-  addPlanterSubmit() {
-    console.log('A planter was added: ' + this.state.newId + ' | type: ' + this.state.newType);
-    this.setState({cards: this.state.cards.concat([{name: this.state.newId, type: this.state.newType, health: "med", nutrients: "med", harvest: "med"}])});
-  }
-
-  planterIdChange(event) {
-    this.setState({newId: event.target.value});
+  planterNameChange(event) {
+    this.setState({newPlanterName: event.target.value});
   }
 
   planterTypeChange(event) {
-    this.setState({newType: event.target.value});
+    this.setState({newPlanterType: event.target.value});
+  }
+
+  planterCropChange(event) {
+    this.setState({newPlanterCrop: event.target.value});
   }
 
   userChange(event) {
@@ -171,11 +192,54 @@ class Farm extends Component {
     }
   }
 
+  getPlanters(){
+    if (this.props.location.farmid) {
+      fetch(('/farms/' + this.props.location.farmid + '/planters'), {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }).then(res => res.json())
+      .then(json => {
+        console.log('json', json);
+        this.setState({planters: json.planters})
+      });
+    } else {
+      console.log("Farm ID error in get planters");
+    }
+  }
+
+  addPlanterSubmit(){
+    this.setState({newPlanterName: '', newPlanterType: ''});
+    if (this.props.location.farmid) {
+      console.log(this.props.location.farmid);
+      fetch(('/planters/create'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: this.state.newPlanterName,
+          planterType: this.state.newPlanterType,
+          farmid: this.props.location.farmid
+        })
+      }).then(res => res.json())
+      .then(json => {
+        console.log("planter made ayo");
+        this.getPlanters();
+      });
+    } else {
+      console.log("Farm ID error in add planter");
+    }
+  }
+
   render() {
     const {
       loggedOut,
       loading,
-      newFarm
+      newFarm,
+      planters,
+      planterTypes
     } = this.state;
     if (loggedOut) {
       return (
@@ -235,7 +299,7 @@ class Farm extends Component {
               Planters
             </h1>
 
-            <button style={{verticalAlign:'unset'}}type="button" className="btn btn-primary" data-toggle="modal" data-target="#addPlanterModal">Add Planter</button>
+            <button style={{verticalAlign:'unset'}} className="btn btn-primary" data-toggle="modal" data-target="#addPlanterModal">Add Planter</button>
             <div className="modal fade" id="addPlanterModal" tabIndex="-1" role="dialog" aria-labelledby="addPlanterModal" aria-hidden="true">
               <div className="modal-dialog" role="document">
                 <div className="modal-content">
@@ -249,28 +313,41 @@ class Farm extends Component {
                     <form onSubmit={this.addPlanterSubmit}>
                       <div className="form-group">
                         <label htmlFor="planter-id" className="col-form-label">Planter Name:</label>
-                        <input type="text" value={this.state.newId} onChange={this.planterIdChange} className="form-control" id="planter-id"/>
+                        <input required type="text" value={this.state.newPlanterName} onChange={this.planterNameChange} className="form-control" id="planter-id"/>
+                        <label htmlFor="planter-crop" className="col-form-label">Planter Crop:</label>
+                        <input type="text" value={this.state.newPlanterCrop} onChange={this.planterCropChange} className="form-control" id="planter-crop"/>
                       </div>
                       <div className="form-group">
                         <label htmlFor="message-text" className="col-form-label">Plant Type:</label>
-                        <input type="text" value={this.state.newType} onChange={this.planterTypeChange} className="form-control" id="planter-type"/>
+                        <select class="browser-default custom-select">
+                          <option selected>Select a planter type...</option>
+                          {planterTypes.map((type) => (
+                            <option value={type}>{type}</option>
+                          ))}
+                        </select>
                       </div>
                     </form>
                   </div>
                   <div className="modal-footer">
                     <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" onClick={this.addPlanterSubmit} className="btn btn-primary">Add</button>
+                    <button type="button" onClick={this.addPlanterSubmit} data-dismiss="modal" className="btn btn-primary">Add</button>
                   </div>
                 </div>
               </div>
             </div>
             <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-5">
-            {this.state.cards.map((card) => (
-              <Link className="hidden-link" to={'/planter/' + card.name}>
-                <PlanterCard name={card.name} type={card.type} health={card.health} 
-                  nutrients={card.nutrients} harvest={card.harvest}/>
+            {planters.length > 0 ? 
+            planters.map((planter) => (
+              <Link className="hidden-link" to={'/planter/' + planter.name}>
+                <PlanterCard name={planter.name} type={planter.growType}/>
               </Link>
-            ))}
+            )): 
+            <div className="container">
+              <div className="signin-wrapper">
+                <p>Planters you add will appear here</p>
+              </div>
+            </div>
+            }
             </div>
           </div>
 
@@ -287,7 +364,7 @@ class Farm extends Component {
                   <form onSubmit={this.addFarmSubmit}>
                     <div className="form-group">
                       <label htmlFor="farm-name" className="col-form-label">Farm Name:</label>
-                      <input type="text" value={this.state.newFarmName} onChange={this.farmNameChange} className="form-control" id="farm-name"/>
+                      <input required type="text" value={this.state.newFarmName} onChange={this.farmNameChange} className="form-control" id="farm-name"/>
                     </div>
                   </form>
                 </div>
@@ -325,7 +402,7 @@ class Farm extends Component {
                     <div className="form-group">
                       <label htmlFor="farm-name" className="col-form-label">Invite user:</label>
                       <div className="input-group">
-                        <input type="text" value={this.state.newUser} onChange={this.userChange} placeholder="Username to invite" className="form-control" id="farm-name"/>
+                        <input required type="text" value={this.state.newUser} onChange={this.userChange} placeholder="Username to invite" className="form-control" id="farm-name"/>
                         <div className="input-group-append">
                           <button onClick={this.addUserSubmit} data-dismiss="modal" className="btn btn-primary">Add</button>
                         </div>
