@@ -3,6 +3,8 @@ import { Redirect, Link } from 'react-router-dom';
 import PlanterCard from '../Custom/PlanterCard';
 import Loading from '../Loading/Loading';
 
+import { setInStorage } from '../../utils/storage';
+
 import '../../styles/farm.scss';
 
 class Farm extends Component {
@@ -45,6 +47,7 @@ class Farm extends Component {
   componentDidMount() {
     this._isMounted = true;
     if(this.props.match.params.farmName) {
+      setInStorage('lastFarm', { _id: this.props.location.farmid, name: this.props.match.params.farmName});
       this.setState({curFarm: this.props.match.params.farmName});
     }
     this.getMembers();
@@ -194,6 +197,7 @@ class Farm extends Component {
 
   getPlanters(){
     if (this.props.location.farmid) {
+      this.setState({loading: true});
       fetch(('/farms/' + this.props.location.farmid + '/planters'), {
         method: 'GET',
         headers: {
@@ -201,8 +205,9 @@ class Farm extends Component {
         }
       }).then(res => res.json())
       .then(json => {
-        console.log('json', json);
+        console.log('json', json.planters);
         this.setState({planters: json.planters})
+        this.setState({loading: false});
       });
     } else {
       console.log("Farm ID error in get planters");

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import Loading from '../Loading/Loading';
 
+import { getFromStorage } from '../../utils/storage';
+
 import '../../styles/home.scss';
 
 class Home extends Component {
@@ -25,6 +27,7 @@ class Home extends Component {
     this._isMounted = true;
     if( this.props.user && this.props.user._id) {
       this.setState({name: this.props.user.username})
+      const lastStoredFarm = getFromStorage('lastFarm');
       this.setState({loading: true});
       fetch(('/users/myFarms'), {
         type: 'GET',
@@ -34,7 +37,14 @@ class Home extends Component {
       }).then(res => res.json())
       .then(json => {
         if (json.farms) {
-          this.setState({lastFarm: json.farms[0]});
+          console.log([lastStoredFarm._id, lastStoredFarm.name]);
+          console.log(json.farms)
+          if (lastStoredFarm && lastStoredFarm._id && lastStoredFarm.name &&
+            JSON.stringify(json.farms).indexOf(JSON.stringify([lastStoredFarm._id, lastStoredFarm.name])) >= 0) {
+              this.setState({lastFarm: lastStoredFarm});
+          } else {
+            this.setState({lastFarm: {_id: json.farms[0][0], name:json.farms[0][1]}});
+          }
         }
         this.setState({loading: false});
       });
@@ -101,8 +111,8 @@ class Home extends Component {
     } else if (lastFarm) {
       return (
         <Redirect push to={{
-          pathname: "/farm/"+ this.state.lastFarm[1],
-          farmid: lastFarm[0]
+          pathname: "/farm/"+ this.state.lastFarm.name,
+          farmid: lastFarm._id
           }}/>
       )
     } else if (!lastFarm) {
