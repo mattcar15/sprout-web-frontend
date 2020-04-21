@@ -46,6 +46,7 @@ class Farm extends Component {
     this.getMembers();
 
     if( this.props.user && this.props.user._id) {
+      this.setState({name: this.props.user.username})
       fetch(('/users/myFarms'), {
         type: 'GET',
         headers: {

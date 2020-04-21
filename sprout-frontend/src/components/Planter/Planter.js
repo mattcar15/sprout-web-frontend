@@ -14,6 +14,12 @@ class Planter extends Component {
     };
 
   }
+  
+  componentDidMount() {
+    if( this.props.user && this.props.user._id) {
+      this.setState({name: this.props.user.username})
+    }
+  }
 
   logout() {
     alert("You logged out");

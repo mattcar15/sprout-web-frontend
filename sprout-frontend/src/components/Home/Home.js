@@ -24,6 +24,7 @@ class Home extends Component {
   componentDidMount() {
     this._isMounted = true;
     if( this.props.user && this.props.user._id) {
+      this.setState({name: this.props.user.username})
       this.setState({loading: true});
       fetch(('/users/myFarms'), {
         type: 'GET',
