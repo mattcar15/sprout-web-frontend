@@ -1,0 +1,30 @@
+.circle-tag {
+    border-radius: 4em;
+    width: 1.2em !important;
+    height: 1.2em !important;
+    padding: 10px;
+    color: white;
+    box-sizing: unset;
+    background-color: #6DE86D;
+    margin: 5px;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgb(207, 207, 207);
+}
+
+.card img {
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.tag-container {
+    margin: 0.83em;
+    margin-top: 0;
+}
+
+.card-body {
+    padding-bottom: 10px;
+}
