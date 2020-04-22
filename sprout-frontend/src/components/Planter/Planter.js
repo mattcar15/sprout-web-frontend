@@ -123,7 +123,6 @@ class Planter extends Component {
     .then(json => {
       console.log(json);
       this.setState({
-        selectedFrame: false,
         firstCycle: json.allData?.plant,
         cycles: json.allData?.harvested,
       });
@@ -141,6 +140,7 @@ class Planter extends Component {
     .then(json => {
       console.log(json);
       this.setState({
+        selectedFrame: false,
         frames: json.info,
       });
     });
@@ -154,6 +154,20 @@ class Planter extends Component {
       frameTemp: frame.temperature,
     });
   }
+
+  formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) 
+        month = '0' + month;
+    if (day.length < 2) 
+        day = '0' + day;
+
+    return [year, month, day].join('-');
+}
 
   render() {
     const {
@@ -205,12 +219,13 @@ class Planter extends Component {
         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-2 row-cols-lg-2 row-cols-xl-6 main-container" style={{amrginTop:20}}>
           <div class="col" style={{marginBottom:20, maxHeight: 300}}>
             <div class="list-group" id="list-tab" role="tablist">
+              <button href="#" class="list-group-item list-group-item-action list-group-item-dark disable">Cycles</button>
               {firstCycle ? 
-                <button class="list-group-item list-group-item-action" data-toggle="list" onClick={() => this.getFrames(firstCycle)} role="tab">{firstCycle.cycle.datePlanted}</button>
+                <button class="list-group-item list-group-item-action" data-toggle="list" onClick={() => this.getFrames(firstCycle)} role="tab">{new Date(firstCycle.cycle.datePlanted).toISOString().split('T')[0]}</button>
               : null}
               {cycles ? 
               cycles.map((cycle) => (
-                <button class="list-group-item list-group-item-action" data-toggle="list" onClick={() => this.getFrames(cycle)} role="tab">{cycle.cycle.datePlanted}</button>
+                <button class="list-group-item list-group-item-action" data-toggle="list" onClick={() => this.getFrames(cycle)} role="tab">{new Date(cycle.cycle.datePlanted).toISOString().split('T')[0]}</button>
               ))
               :
               <button class="list-group-item list-group-item-action disabled" data-toggle="list" role="tab">Create a cycle</button>
@@ -219,8 +234,9 @@ class Planter extends Component {
           </div>
           <div class="col" style={{marginBottom:20, maxHeight: 300}}>
             <div class="list-group" id="list-tab" role="tablist">
+            <button href="#" class="list-group-item list-group-item-action list-group-item-dark disable">Frames</button>
               {frames ? frames.map((frame) => (
-                <button class="list-group-item list-group-item-action" data-toggle="list" onClick={() => this.getFrameData(frame)} role="tab">{frame.insertedAt}</button>
+                <button class="list-group-item list-group-item-action" data-toggle="list" onClick={() => this.getFrameData(frame)} role="tab">{new Date(frame.insertedAt).toISOString().split('T')[0]}</button>
               )) : 
               <button class="list-group-item list-group-item-action disabled" data-toggle="list" role="tab">Select a cycle</button>
               }
@@ -233,13 +249,14 @@ class Planter extends Component {
                 Frame Data
               </div>
               <div class="card-body">
-                <p class="card-text">Temperature: {frameTemp}</p>
-                <p class="card-text">Humidity: {frameHumidity}</p>
-                <p class="card-text">Light time: {frameLight}</p>
+                <p class="card-text">Temperature: {frameTemp} °F</p>
+                <p class="card-text">Humidity: {frameHumidity}%</p>
+                <p class="card-text">Light time: {frameLight} Hours</p>
               </div>
             </div>
             :
             <div class="list-group" id="list-tab" role="tablist">
+              <button href="#" class="list-group-item list-group-item-action list-group-item-dark disable">Frame Data</button>
               <button class="list-group-item list-group-item-action disabled" data-toggle="list" role="tab">Select a frame to view data</button>
             </div>
             }
