@@ -30,14 +30,13 @@ class Home extends Component {
       const lastStoredFarm = getFromStorage('lastFarm');
       this.setState({loading: true});
       fetch(('/users/myFarms'), {
-        type: 'GET',
+        method: 'GET',
         headers: {
           'Content-Type': 'application/json'
         },
       }).then(res => res.json())
       .then(json => {
         if (json.farms) {
-          console.log([lastStoredFarm._id, lastStoredFarm.name]);
           console.log(json.farms)
           if (lastStoredFarm && lastStoredFarm._id && lastStoredFarm.name &&
             JSON.stringify(json.farms).indexOf(JSON.stringify([lastStoredFarm._id, lastStoredFarm.name])) >= 0) {

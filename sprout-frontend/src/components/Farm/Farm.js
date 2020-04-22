@@ -324,7 +324,7 @@ class Farm extends Component {
                       </div>
                       <div className="form-group">
                         <label htmlFor="message-text" className="col-form-label">Plant Type:</label>
-                        <select class="browser-default custom-select">
+                        <select className="browser-default custom-select">
                           <option selected>Select a planter type...</option>
                           {planterTypes.map((type) => (
                             <option value={type}>{type}</option>
@@ -348,6 +348,7 @@ class Farm extends Component {
                 pathname: '/planter/' + planter.name,
                 farmid: this.props.location.farmid,
                 farmname: this.props.match.params.farmName,
+                planterid: planter._id,
               }}>
                 <PlanterCard name={planter.name} type={planter.growType}/>
               </Link>

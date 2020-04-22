@@ -117,14 +117,23 @@ Form {
 .btn-primary:hover {
     background-color: #01b94b;
     border-color: #01b94b;
+    color: white;
 }
 
 .btn-primary:active, .show > .btn-primary.dropdown-toggle {
     background-color: #01b94b !important;
     border-color: #01b94b !important;
+    color: white;
 }
 
-.btn-primary:focus {
+.btn-primary:focus, .list-group-item:focus {
     background-color: #01b94b;
     border-color: #01b94b;
+    color: white;
+}
+
+.list-group-item.active, .list-group-item:hover {
+    background-color: #00d254;
+    border-color: #01b94b;
+    color: white;
 }
